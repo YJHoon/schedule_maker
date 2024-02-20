@@ -29,16 +29,6 @@ const SchedulePage = () => {
   // 이번달 근무 일수 계산 && 휴무 일수 계산
   // 하루에 D2, E2, N2
 
-  const user_list = [
-    "이름1",
-    "이름2",
-    "이름3",
-    "이름4",
-    "이름5",
-    "이름6",
-    "이름7",
-  ];
-
   const now = new Date();
   const startOfThisMonth = startOfMonth(now);
   const endOfThisMonth = endOfMonth(now);
@@ -47,16 +37,10 @@ const SchedulePage = () => {
   const dateqw = getDate(format(now, "yyyy-MM-dd"));
   const dateqw1 = getDate(format(now, "dd"));
 
-  const data = [
-    { id: 1, name: "이름1", schedules: ["D", "N", "D", "E", "S", "D"] },
-    { id: 2, name: "이름2", schedules: ["D", "N", "D", "E", "S", "D"] },
-    { id: 3, name: "이름3", schedules: ["D", "N", "D", "E", "S", "D"] },
-  ];
-
   return (
     <div className="">
       <div className="mt-12">
-        <ScheduleTable user_list={user_list} />
+        <ScheduleTable />
       </div>
     </div>
   );

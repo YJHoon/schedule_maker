@@ -1,57 +1,26 @@
 import _ from "lodash";
 import { findMonthHoliday, dateInfo, dayToString } from "../lib/date_utils";
 import { eachDayOfInterval, format, getDay } from "date-fns";
-import {
-  MutableRefObject,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
-import { defaultUserList, makeSchedule } from "../lib/schedule_utils";
+import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { myCode } from "../lib/schedule_utils";
+import { UserType } from "../common/schema";
 
-interface ScheduleType {
-  id?: number;
-  name: string;
-  schedules: string[];
-}
-
-const ScheduleTable = ({ user_list }: { user_list: string[] }) => {
+const ScheduleTable = () => {
   const date = new Date();
-  const { monthNumber, startOfThisMonth, endOfThisMonth } = dateInfo(date);
+  const { monthNumber, startOfThisMonth, endOfThisMonth, daysInMonth } =
+    dateInfo(date);
   const holidayDateList = findMonthHoliday(
     [],
     startOfThisMonth,
     endOfThisMonth
   );
-  const [users, setUsers] = useState<string[]>(user_list);
-  const [usersSchedules, setUsersSchedules] =
-    useState<{ id: number; name: string; schedules: string[] }[]>();
+  const [usersSchedules, setUsersSchedules] = useState<UserType[]>();
 
-  const checkbox = useRef<MutableRefObject<HTMLInputElement | undefined>>();
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-  const [checked, setChecked] = useState(false);
-  const [indeterminate, setIndeterminate] = useState(false);
-
-  function toggleAll() {
-    // setSelectedPeople(checked || indeterminate ? [] : users);
-    setChecked(!checked && !indeterminate);
-    setIndeterminate(false);
-  }
-
-  const onClickAddUser = (val: string) => {
-    setUsers((prev) => [...prev, val]);
-  };
-
-  const onClickEditUser = () => {};
 
   useEffect(() => {
-    setUsersSchedules(defaultUserList(users, new Date()));
-  }, [users]);
-
-  useEffect(() => {
-    usersSchedules && makeSchedule(usersSchedules);
-  }, [usersSchedules]);
+    setUsersSchedules(myCode(daysInMonth, holidayDateList.length + 2));
+  }, [holidayDateList.length, daysInMonth]);
 
   return (
     <>
@@ -67,14 +36,12 @@ const ScheduleTable = ({ user_list }: { user_list: string[] }) => {
             <button
               type="button"
               className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={() => onClickAddUser("test")}
             >
               Add user
             </button>
             <button
               type="button"
               className="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              onClick={() => onClickEditUser()}
             >
               Edit user
             </button>
@@ -101,6 +68,36 @@ const ScheduleTable = ({ user_list }: { user_list: string[] }) => {
                       className="whitespace-nowrap px-4 py-3.5 text-center text-sm font-semibold text-gray-900 sticky"
                     >
                       이름
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-4 py-3.5 text-center text-sm font-semibold text-gray-900 sticky"
+                    >
+                      D
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-4 py-3.5 text-center text-sm font-semibold text-gray-900 sticky"
+                    >
+                      S
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-4 py-3.5 text-center text-sm font-semibold text-gray-900 sticky"
+                    >
+                      E
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-4 py-3.5 text-center text-sm font-semibold text-gray-900 sticky"
+                    >
+                      N
+                    </th>
+                    <th
+                      scope="col"
+                      className="whitespace-nowrap px-4 py-3.5 text-center text-sm font-semibold text-gray-900 sticky"
+                    >
+                      Off
                     </th>
                     {eachDayOfInterval({
                       start: startOfThisMonth,
@@ -152,27 +149,26 @@ const ScheduleTable = ({ user_list }: { user_list: string[] }) => {
                             }
                           />
                         </td>
-                        <td
-                          className={`whitespace-nowrap text-center p-4 text-sm font-medium
-                              ${
-                                selectedUserId === user.id
-                                  ? "text-indigo-600"
-                                  : "text-gray-900"
-                              }
-                            `}
-                        >
+                        <td className="whitespace-nowrap text-center p-4 text-sm font-medium">
                           {user.id}
                         </td>
-                        <td
-                          className={`whitespace-nowrap text-center p-4 text-sm font-medium
-                              ${
-                                selectedUserId === user.id
-                                  ? "text-indigo-600"
-                                  : "text-gray-900"
-                              }
-                            `}
-                        >
+                        <td className="whitespace-nowrap text-center p-4 text-sm font-medium">
                           {user.name}
+                        </td>
+                        <td className="whitespace-nowrap text-center p-4 text-sm font-medium">
+                          {user.D}
+                        </td>
+                        <td className="whitespace-nowrap text-center p-4 text-sm font-medium">
+                          {user.S}
+                        </td>
+                        <td className="whitespace-nowrap text-center p-4 text-sm font-medium">
+                          {user.E}
+                        </td>
+                        <td className="whitespace-nowrap text-center p-4 text-sm font-medium">
+                          {user.N}
+                        </td>
+                        <td className="whitespace-nowrap text-center p-4 text-sm font-medium">
+                          {user.Off}
                         </td>
                         {user.schedules.map((s, index) => (
                           <td

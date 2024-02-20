@@ -63,10 +63,12 @@ export const dateInfo = (date: Date) => {
   const monthNumber = getMonth(date) + 1;
   const startOfThisMonth = startOfMonth(date);
   const endOfThisMonth = endOfMonth(date);
+  const daysInMonth = getDaysInMonth(date);
 
   return {
     monthNumber,
     startOfThisMonth,
     endOfThisMonth,
+    daysInMonth,
   };
 };
